@@ -11,8 +11,12 @@ import {IUniswapV2Pair} from "@uniswap/v2-core/contracts/interfaces/IUniswapV2Pa
 import {IWETH} from "@uniswap/v2-periphery/contracts/interfaces/IWETH.sol";
 import {Token} from "src/other/Token.sol";
 import {IBondingCurve,IEminenceCurrency} from "src/bonding-curve/EminenceInterfaces.sol";
+import {Exploit} from "src/bonding-curve/Exploit.sol";
 
-
+interface IContinuousToken {
+    function reserveBalance() external view returns(uint);
+    function reserveRatio() external view returns(uint32);
+}
 contract Testing is Test {
 
     address attacker = makeAddr('attacker');
@@ -137,6 +141,14 @@ contract Testing is Test {
         vm.startPrank(attacker,attacker);
 
         // implement solution here
+        Exploit exp = new Exploit(
+            address(uniPair), 
+            address(dai),
+            address(eminenceCurrency), 
+            address(eminenceCurrencyBase)
+        );
+        exp.start(150_000e18);
+        emit log_named_decimal_uint("dai=", dai.balanceOf(attacker), 18);
 
         vm.stopPrank();
         validation();

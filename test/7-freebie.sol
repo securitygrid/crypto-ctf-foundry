@@ -8,6 +8,7 @@ import {console} from "forge-std/console.sol";
 import {Token} from "src/other/Token.sol";
 import {GovToken} from "src/freebie/GovToken.sol";
 import {RewardsAdvisor} from "src/freebie/RewardsAdvisor.sol";
+import {Exploit} from "src/freebie/Exploit.sol";
 
 
 contract Testing is Test {
@@ -65,6 +66,10 @@ contract Testing is Test {
         vm.startPrank(attacker,attacker);
         
         // implement solution here
+        Exploit exp = new Exploit(address(farm), address(govToken));
+        exp.start(address(rewardsAdvisor));
+        emit log_named_decimal_uint("[attack]farm bal:", farm.balanceOf(attacker), 18);
+        emit log_named_decimal_uint("[rewardsAdvisor]farm bal:", farm.balanceOf(address(rewardsAdvisor)), 18);
 
         vm.stopPrank();
         validation();

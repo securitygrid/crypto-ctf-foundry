@@ -11,6 +11,7 @@ import {IUniswapV2Pair} from "@uniswap/v2-core/contracts/interfaces/IUniswapV2Pa
 import {IWETH} from "@uniswap/v2-periphery/contracts/interfaces/IWETH.sol";
 import {Token} from "src/other/Token.sol";
 import {FlashLoaner} from "src/flash-loaner/FlashLoaner.sol";
+import {Exploit} from "src/flash-loaner/Exploit.sol";
 
 
 contract Testing is Test {
@@ -105,7 +106,10 @@ contract Testing is Test {
         vm.startPrank(attacker,attacker);
 
         // implement solution here
-
+        Exploit exp = new Exploit(address(uniPair), address(usdc), address(flashLoaner));
+        exp.start();
+        emit log_named_decimal_uint("usdc=", usdc.balanceOf(attacker), 18);
+        
         vm.stopPrank();
         validation();
     }

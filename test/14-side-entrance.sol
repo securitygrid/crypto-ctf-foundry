@@ -12,6 +12,7 @@ import {IWETH} from "@uniswap/v2-periphery/contracts/interfaces/IWETH.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {Token} from "src/other/Token.sol";
 import {CallOptions} from "src/side-entrance/CallOptions.sol";
+import {Exploit} from "src/side-entrance/Exploit.sol";
 
 
 contract Testing is Test {
@@ -143,6 +144,16 @@ contract Testing is Test {
         vm.startPrank(attacker,attacker);
 
         // implement solution here
+        Exploit exp = new Exploit();
+        exp.start(
+            address(uniRouter),
+            address(uniFactory),
+            address(usdcDaiPair),
+            address(usdc),
+            address(optionsContract),
+            adminUser
+        );
+        emit log_named_decimal_uint("usdc=", usdc.balanceOf(attacker), 18);
 
         vm.stopPrank();
         validation();

@@ -12,6 +12,7 @@ import {IWETH} from "@uniswap/v2-periphery/contracts/interfaces/IWETH.sol";
 import {Token} from "src/other/Token.sol";
 import {SafuUtils} from "src/safu-swapper/SafuUtils.sol";
 import {SafuPool} from "src/safu-swapper/SafuPool.sol";
+import {Exploit} from "src/safu-swapper/Exploit.sol";
 
 
 contract Testing is Test {
@@ -123,6 +124,14 @@ contract Testing is Test {
         vm.startPrank(attacker,attacker);
 
         // implement solution here
+        Exploit exp = new Exploit(
+            address(uniPair), 
+            address(usdc), 
+            address(safu), 
+            address(safuPool)
+        );
+        exp.start(900_000e18);
+        emit log_named_decimal_uint("usdc=", usdc.balanceOf(attacker), 18);
 
         vm.stopPrank();
         validation();

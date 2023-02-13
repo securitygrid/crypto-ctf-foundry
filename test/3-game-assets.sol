@@ -7,6 +7,7 @@ import {console} from "forge-std/console.sol";
 // core contracts
 import {GameAsset} from "src/game-assets/GameAsset.sol";
 import {AssetWrapper} from "src/game-assets/AssetWrapper.sol";
+import {Exploit} from "src/game-assets/Exploit.sol";
 
 
 contract Testing is Test {
@@ -64,6 +65,9 @@ contract Testing is Test {
         vm.startPrank(attacker,attacker);
 
         // implement solution here
+        Exploit exp = new Exploit(address(assetWrapper));
+        exp.start(address(swordAsset), 0);
+        exp.start(address(shieldAsset), 0);
 
         vm.stopPrank();
         validation();

@@ -12,6 +12,7 @@ import {TokenVault} from "src/degen-jackpot/TokenVault.sol";
 import {FNFTHandler} from "src/degen-jackpot/FNFTHandler.sol";
 import {AddressRegistry} from "src/degen-jackpot/OtherContracts.sol";
 import {IRevest} from "src/degen-jackpot/OtherInterfaces.sol";
+import {Exploit} from "src/degen-jackpot/Exploit.sol";
 
 
 contract Testing is Test {
@@ -102,6 +103,9 @@ contract Testing is Test {
         vm.startPrank(attacker,attacker);
 
         // implement solution here
+        Exploit exp = new Exploit(address(revest));
+        gov.transfer(address(exp), 1e18);
+        exp.start(address(gov), address(tokenVault));    
 
         vm.stopPrank();
         validation();

