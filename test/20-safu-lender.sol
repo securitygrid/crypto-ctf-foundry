@@ -125,7 +125,6 @@ contract Testing is Test {
             address(wbtc), 
             address(moneyMarket)
         );
-        erc1820Registry.updateERC165Cache(address(exp), bytes4(keccak256("ERC777TokensSender")));
         exp.start();
         emit log_named_decimal_uint("wbtc=", wbtc.balanceOf(attacker), 18);
 
